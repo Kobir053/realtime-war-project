@@ -21,19 +21,19 @@ export const handleLaunch = async (req: Request, res: Response, next: NextFuncti
 export const handleExploation = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const warriorId = req.params.id;
-        const missileId = req.params.missileId;
-        if(!warriorId || !missileId){
+        if(!warriorId){
             res.status(400).json({message: "you have to send the id of warrior and the missileId in the params"});
             return;
         }
         
         const status = req.body.status;
-        if(!status){
+        const attacker = req.body.attacker;
+        if(!status || !attacker){
             res.status(400).json({message: "you have to send the status of the rocket in the body"});
             return;
         }
 
-        const updatedWarrior = await exploadedRocket(warriorId, missileId, status);
+        const updatedWarrior = await exploadedRocket(warriorId, status, attacker);
         res.status(200).json({success: true, message: "succeeded to update the launchHistory of the warrior", updatedWarrior});
     } 
     catch (error: any) {
