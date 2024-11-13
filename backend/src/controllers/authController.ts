@@ -1,9 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { soldierRegister, terroristRegister, warriorLogin } from "../services/authService";
-import { Warrior } from "../models/warriorModel";
 
-export const handleRegister = async (req: Request, res: Response, next: NextFunction) => {
+export const handleRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { username, password, organization } = req.body;
         if(!req.body.location){
@@ -21,7 +20,7 @@ export const handleRegister = async (req: Request, res: Response, next: NextFunc
     }
 }
 
-export const handleLogin = async (req: Request, res: Response, next: NextFunction) => {
+export const handleLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { username, password } = req.body;
       const warrior: any = warriorLogin(username, password);
