@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-import { IDF, IMissileResource, IResource, Terorists } from "../types/projectTypes";
+import { IDF, ILaunched, IMissileResource, IResource, Terorists } from "../types/projectTypes";
 import organizationModel, { Organization } from "./organizationModel";
 import missileModel from "./missilesModel";
 
@@ -10,6 +10,7 @@ export interface Warrior {
     organization: Terorists | "IDF";
     location: IDF | null;
     resources: IMissileResource[];
+    launchHistory: ILaunched[]; 
 }
 
 const warriorSchema = new Schema<Warrior>({
@@ -35,6 +36,10 @@ const warriorSchema = new Schema<Warrior>({
     resources: {
         type: [Object],
         default: []
+    },
+    launchHistory: {
+        type: [{rocket: {type: String}, status: {type: String}}],
+        default: [],
     },
 });
 

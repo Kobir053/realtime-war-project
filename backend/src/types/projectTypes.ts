@@ -24,11 +24,7 @@ export interface IMissileResource {
     amount: number;
 }
 
-// const org: Organization = organizationModel.find({name: "IDF - North"})[0];
-
-// let res: IMissileResource[] = [];
-
-// org.resources.map((val: IResource) => {
-//     let missile = missileModel.find({name: val.name})[0];
-//     res.push({missile: missile, amount: val.amount});
-// });
+export interface ILaunched {
+    rocket: string;
+    status: "Hit" | "Intercepted";
+}
