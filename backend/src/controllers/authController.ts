@@ -28,7 +28,7 @@ export const handleLogin = async (req: Request, res: Response, next: NextFunctio
   
       const token = jwt.sign(
         { warriorId: warrior._id, username: warrior.username },
-        process.env.JWT_SECRET || "your-secret-key",
+        process.env.JWT_SECRET || "your-super-secret-key",
         { expiresIn: '24h' }
       );
   
