@@ -11,3 +11,10 @@ export enum Terorists {
     IRGC = "IRGC",
     HOUTHIS = "Houthis"
 }
+
+export interface IRegister {
+    username: string;
+    password: string;
+    organization: Terorists | "IDF";
+    location: IDF | null;
+}

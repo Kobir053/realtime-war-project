@@ -1,7 +1,7 @@
-import mongoose, { Schema, Types, Document } from "mongoose";
+import mongoose, { Schema, Types, Document, ObjectId } from "mongoose";
 import { IDF, ILaunched, IMissileResource, IResource, Terorists } from "../types/projectTypes";
-import organizationModel, { Organization } from "./organizationModel";
-import missileModel from "./missilesModel";
+
+export type objectID = ObjectId;
 
 export interface Warrior extends Document {
     _id: Types.ObjectId;

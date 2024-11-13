@@ -6,13 +6,13 @@ export const handleRegister = async (req: Request, res: Response, next: NextFunc
     try {
         const { username, password, organization } = req.body;
         if(!req.body.location){
-            const newTerrorist = await terroristRegister({username, password, organization});
-            res.status(201).json({success: true, message: "terrorist registered successfully", newTerrorist});
+            const newWarrior = await terroristRegister({username, password, organization});
+            res.status(201).json({success: true, message: "terrorist registered successfully", newWarrior});
         }
         else{
             const location = req.body.location;
-            const newSoldier = await soldierRegister({username, password, organization, location});
-            res.status(201).json({success: true, message: "soldier registered successfully", newSoldier});
+            const newWarrior = await soldierRegister({username, password, organization, location});
+            res.status(201).json({success: true, message: "soldier registered successfully", newWarrior});
         }
     } 
     catch (error) {
