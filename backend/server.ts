@@ -4,6 +4,7 @@ import cors from "cors";
 import { createServer } from "http";
 import connectDB from "./src/db/db";
 import authRouter from "./src/routes/authRoutes";
+import warriorRouter from "./src/routes/warriorRoutes";
 import { initializeSocketServer } from "./socketServer";
 
 dotenv.config();
@@ -20,6 +21,8 @@ app.use(cors());
 connectDB();
 
 app.use("/api/auth", authRouter);
+
+app.use("/api/warrior", warriorRouter);
 
 
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
