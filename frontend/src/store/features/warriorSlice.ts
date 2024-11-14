@@ -39,9 +39,9 @@ export const loginWarrior = createAsyncThunk("warrior/loginWarrior", async (data
     return response.data;
 });
 
-export const launchMissile = createAsyncThunk("warrior/launchMissile", async(warriorId, missileId) => {
+export const launchMissile = createAsyncThunk("warrior/launchMissile", async(data: {warriorId: string, missileId: string}) => {
     const token = JSON.parse(localStorage.getItem("warriorToken")!);
-    const response = await axios.put(`${BASE_URL}/warrior/${warriorId}/launched/${missileId}`, {}, {headers: {Authorization: `Bearer ${token}`}});
+    const response = await axios.put(`${BASE_URL}/warrior/${data.warriorId}/launched/${data.missileId}`, {}, {headers: {Authorization: `Bearer ${token}`}});
     console.log("response of launch missile: " + response.data);
     return response.data;
 });

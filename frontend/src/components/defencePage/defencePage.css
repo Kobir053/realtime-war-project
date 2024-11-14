@@ -1,0 +1,72 @@
+.defence-page{
+    min-width: 90vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 15px;
+    gap: 20px;
+}
+
+.defence-page .title{
+    height: 8%;
+    width: 96%;
+    display: flex;
+    justify-content: left;
+}
+
+.defence-page nav{
+    height: 15%;
+    width: 80%;
+    border-radius: 4px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.405);
+    display: flex;
+    flex-direction: column;
+}
+
+.defence-page nav .nav-title{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.defence-page nav .nav-info{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.defence-page nav .nav-info .weapons {
+    min-width: 25%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.defence-page nav .nav-info .weapons span{
+    text-decoration: underline;
+}
+
+.defence-page table{
+    max-height: 60%;
+    width: 50%;
+    overflow-y: scroll;
+    border: none;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.defence-page table thead td{
+    background-color: gray;
+    font-weight: 600;
+}
+
+.defence-page table td{
+    border: 2px solid rgba(128, 128, 128, 0.478);
+    padding: 20px;
+    text-align: center;
+    vertical-align: middle;
+}

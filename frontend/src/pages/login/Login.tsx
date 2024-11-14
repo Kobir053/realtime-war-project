@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from '../../store/store';
 import { loginWarrior } from '../../store/features/warriorSlice';
+import './login.css';
 
 const Login: React.FC = () => {
 
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
 
   return (
     <div className='login'>
-        <div>
+        <div className='login-container'>
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
                 <div>
