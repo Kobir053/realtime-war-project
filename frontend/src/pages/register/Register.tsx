@@ -1,15 +1,34 @@
 import React from 'react';
 import './register.css';
 import useForm from '../../hooks/useForm';
-import { IDF, Terorists } from '../../types/frontendTypes';
+import { IDF, IRegister, Terorists } from '../../types/frontendTypes';
+import { AppDispatch } from '../../store/store';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router';
+import { registerWarrior } from '../../store/features/warriorSlice';
 
 const Register: React.FC = () => {
 
-    const onSubmit = () => {
+    const dispatch: AppDispatch = useDispatch<AppDispatch>();
 
+    const nev = useNavigate();
+
+    const onSubmit = () => {
+        if(formValues.username == "" || formValues.password == ""){
+            alert("please enter your details");
+            return;
+        }
+        const data: IRegister = {
+            username: formValues.username,
+            password: formValues.password,
+            organization: formValues.organization,
+            location: formValues.location
+        };
+        dispatch(registerWarrior(data));
+        nev("/login");
     }
 
-    const { formValues, handleChange, handleSubmit } = useForm({username: "",password: "",organization: "",location: ""}, onSubmit);
+    const { formValues, handleChange, handleSubmit } = useForm({username: "",password: "",organization: "Hezbollah",location: "North"}, onSubmit);
 
   return (
     <div className='register'>

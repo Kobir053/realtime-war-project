@@ -1,3 +1,5 @@
+import { objectID } from "../../../backend/src/models/warriorModel";
+
 export enum IDF {
     NORTH = "North",
     SOUTH = "South",
@@ -15,6 +17,12 @@ export enum Terorists {
 export interface IRegister {
     username: string;
     password: string;
-    organization: Terorists | "IDF";
-    location: IDF | null;
+    organization: string;
+    location: string;
+}
+
+export interface IExploation {
+    warriorId: objectID;
+    status: string;
+    attacker: string;
 }
