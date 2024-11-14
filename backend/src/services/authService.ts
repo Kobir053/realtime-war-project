@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 
 export const terroristRegister = async (data: {username: string, password: string, organization: string}): Promise<Warrior> => {
     try {
+        console.log("org: ", data.organization);
         const myOrganization = await organizationModel.findOne({name: data.organization});
         if(!myOrganization)
             throw new Error("organization you are trying to join not found");

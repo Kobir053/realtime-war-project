@@ -1,98 +1,117 @@
 import { useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
+import { Missile } from '../../../backend/src/models/missilesModel';
+import { ILaunched } from '../../../backend/src/types/projectTypes';
+import { AppDispatch, RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCurrentLaunches, exploationOfMissile, removeLaunchFromCurrentLaunches, setWarriorRoom } from '../store/features/warriorSlice';
+import { IExploation } from '../types/frontendTypes';
 
 const SERVER_URL = 'http://localhost:3001';
 
-type CallbackResponse = { status: string };
-type Message = string | Record<string, any>;
-
 export function useSocket() {
+
+    const dispatch: AppDispatch = useDispatch<AppDispatch>();
+
+    const {warrior} = useSelector((state: RootState) => state.warrior);
+
     const [socket, setSocket] = useState<Socket | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [missile, setMissile] = useState<Missile | null>(null);
     const [room, setRoom] = useState<string>(''); // Keep track of the current room
+    const [sesion, setSession] = useState<ILaunched | null>(null);
 
     useEffect(() => {
         const socketInstance = io(SERVER_URL);
         setSocket(socketInstance);
 
         socketInstance.on('connect', () => {
-        console.log('Connected:', socketInstance.id);
-        setConnected(true);
+            console.log('Connected:', socketInstance.id);
+            setConnected(true);
         });
 
         socketInstance.on('disconnect', (reason: string) => {
-        console.log('Disconnected:', reason);
-        setConnected(false);
+            console.log('Disconnected:', reason);
+            setConnected(false);
         });
 
-        socketInstance.on('room-message', (message: Message) => {
-        console.log('Room message received:', message);
-        setMessages((prev) => [...prev, message]);
+        socketInstance.on('launched', (rocket: Missile) => {
+            console.log('Room recieved launch of: ', rocket.name);
+            setMissile(rocket);
+            dispatch(addToCurrentLaunches(rocket));
         });
 
-        socketInstance.on('broadcast-message', (message: Message) => {
-        console.log('Broadcast message received:', message);
-        setMessages((prev) => [...prev, "Broadcast: "+ message]);
+        socketInstance.on('intercepted', (rocket: Missile) => {
+            console.log('Room recieved launch of: ', rocket.name);
+            setSession({rocket: rocket.name, status: "Intercepted"});
+            const exploation: IExploation = {status: sesion?.status!,attacker: sesion?.status! , warriorId: warrior?._id!};
+            dispatch(exploationOfMissile(exploation));
+            dispatch(removeLaunchFromCurrentLaunches(rocket));
         });
 
-        socketInstance.on('heartbeat', (data: { time: string }) => {
-        console.log('Heartbeat received:', data);
+        socketInstance.on('hitted', (rocket: Missile) => {
+            console.log('Room recieved launch of: ', rocket.name);
+            setSession({rocket: rocket.name, status: "Hit"});
+            const exploation: IExploation = {status: sesion?.status!,attacker: sesion?.status! , warriorId: warrior?._id!};
+            dispatch(exploationOfMissile(exploation));
+            dispatch(removeLaunchFromCurrentLaunches(rocket));
         });
 
         return () => {
-        socketInstance.disconnect();
+            socketInstance.disconnect();
         };
     }, []);
 
     function joinRoom(room: string) {
         if (socket) {
-        socket.emit('join', room);
-        setRoom(room);  // Update the current room state
-        console.log(`Joining room: ${room}`);
+            socket.emit('join', room);
+            setRoom(room);  // Update the current room state
+            dispatch(setWarriorRoom(room));
+            console.log(`Joining room: ${room}`);
         }
     }
 
     function leaveRoom(room: string) {
         if (socket) {
-        socket.emit('leave', room);
-        setRoom('');  // Reset room state when leaving
-        console.log(`Leaving room: ${room}`);
+            socket.emit('leave', room);
+            setRoom('');  // Reset room state when leaving
+            dispatch(setWarriorRoom(""));
+            console.log(`Leaving room: ${room}`);
         }
     }
 
-    function sendMessageToRoom(message: Message) {
+    function sendLaunch(rocket: Missile) {
         if (socket && room) {
-        socket.emit('message-to-room', room, message);
-        console.log(`Sending message to room ${room}:`, message);
+            socket.emit('launch-rocket', room, rocket);
+            console.log(`launching rocket ${rocket.name} to room ${room}`);
         }
     }
 
-    function broadcastMessage(message: Message) {
-        if (socket) {
-        socket.emit('broadcast', message);  // Emit broadcast message to all clients except sender
-        console.log(`Broadcasting message:`, message);
-        setMessages((prev) => [...prev, "Me Broadcasting: "+message]); // When broadcast everyone recieves it but the one who sent it don't
+    function interceptedRocket(rocket: Missile) {
+        if (socket && room) {
+            socket.emit('intercept-rocket', room, rocket);
+            console.log(`intercepting rocket ${rocket.name} in room: ${room}`);
+            // setSession({rocket: rocket.name, status: "Intercepted"});
         }
     }
 
-    function sendRequest(data: Message, callback: (response: CallbackResponse) => void) {
-        if (socket) {
-        socket.emit('request', data, (response: CallbackResponse) => {
-            console.log('Request response:', response);
-            callback(response);
-        });
+    function hittedRocket(rocket: Missile) {
+        if (socket && room) {
+            socket.emit('hit-rocket', room, rocket);
+            console.log(`rocket ${rocket.name} hitted in room: ${room}`);
+            // setSession({rocket: rocket.name, status: "Hit"});
         }
     }
 
     return {
         connected,
-        messages,
+        missile,
         room,
+        sesion,
         joinRoom,
         leaveRoom,
-        sendMessageToRoom,
-        broadcastMessage,
-        sendRequest,
+        sendLaunch,
+        hittedRocket,
+        interceptedRocket,
     };
 }

@@ -12,12 +12,12 @@ const Login: React.FC = () => {
 
     const nev = useNavigate();
 
-    const onSubmit = () => {
+    const onSubmit = async() => {
         if(formValues.username == "" || formValues.password == ""){
             alert("please enter the details");
             return;
         }
-        dispatch(loginWarrior(formValues as {username: string, password: string}));
+        await dispatch(loginWarrior(formValues as {username: string, password: string}));
         nev("/war");
     }
 

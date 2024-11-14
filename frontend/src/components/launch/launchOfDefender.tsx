@@ -2,24 +2,26 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { Missile } from '../../../../backend/src/models/missilesModel';
-import { exploationOfMissile, launchMissile } from '../../store/features/warriorSlice';
+import { exploationOfMissile, launchMissile, removeLaunchFromCurrentLaunches } from '../../store/features/warriorSlice';
+import { useSocket } from '../../hooks/useSocket';
 
 interface LaunchOfDefenderProps {
-    timeToHit: number;
-    rocketName: string;
+    rocket: Missile;
 }
 
-const launchOfDefender: React.FC<LaunchOfDefenderProps> = ({ timeToHit, rocketName }) => {
+const LaunchOfDefender: React.FC<LaunchOfDefenderProps> = ({ rocket }) => {
 
     const {warrior} = useSelector((state: RootState) => state.warrior);
 
     const dispatch: AppDispatch = useDispatch<AppDispatch>();
 
+    const { hittedRocket, interceptedRocket } = useSocket();
+
     const checkAbillityForInterception = (): boolean => {
         let flag = false;
         for(let i = 0;i < warrior!.resources.length; i++){
             for(let j = 0;j < warrior!.resources[i].missile.intercepts.length;j++){
-                if(warrior!.resources[i].missile.intercepts[j] == rocketName && warrior!.resources[i].amount > 0){
+                if(warrior!.resources[i].missile.intercepts[j] == rocket.name && warrior!.resources[i].amount > 0){
                     flag = true;
                     setInterceptor(warrior!.resources[i].missile);
                     break;
@@ -31,7 +33,7 @@ const launchOfDefender: React.FC<LaunchOfDefenderProps> = ({ timeToHit, rocketNa
         return flag;
     }
 
-    const [time, setTime] = useState<number>(timeToHit);
+    const [time, setTime] = useState<number>(rocket.speed);
     const [exploaded, setExploaded] = useState<boolean>(false);
     const [showInterceptSign, setShowInterceptSign] = useState<boolean>(checkAbillityForInterception());
     const [interceptor, setInterceptor] = useState<Missile | null>(null);
@@ -56,17 +58,18 @@ const launchOfDefender: React.FC<LaunchOfDefenderProps> = ({ timeToHit, rocketNa
         setShowInterceptSign(false);
 
         // API request for substract the amount of missile with the missileId
-        const data = {warriorId: warrior!._id!.toString(), missileId: interceptor?.id};
+        const data = {warriorId: warrior!._id!.toString(), missileName: interceptor!.name};
         dispatch(launchMissile(data));
 
         // socket call to update if was intercepted or hitted
         if(interceptor!.speed! <= time){
             setTimeout(() => {
                 // socket for update that it was intercepted
+                hittedRocket(rocket);
                 const dataForExploation = {
                     warriorId: warrior?._id!,
                     status: "Intercepted",
-                    attacker: rocketName
+                    attacker: rocket.name
                 };
                 dispatch(exploationOfMissile(dataForExploation));
                 setExploaded(true);
@@ -76,12 +79,14 @@ const launchOfDefender: React.FC<LaunchOfDefenderProps> = ({ timeToHit, rocketNa
         else{
             setTimeout(() => {
                 // socket for update that it was hitted
+                interceptedRocket(rocket);
                 const dataForExploation = {
                     warriorId: warrior?._id!,
                     status: "Hitted",
-                    attacker: rocketName
+                    attacker: rocket.name
                 };
                 dispatch(exploationOfMissile(dataForExploation));
+                // dispatch(removeLaunchFromCurrentLaunches(rocket));
                 setExploaded(true);
                 clearInterval(intervalOfAttacker);
             }, interceptor!.speed);
@@ -92,11 +97,11 @@ const launchOfDefender: React.FC<LaunchOfDefenderProps> = ({ timeToHit, rocketNa
 
   return (
     <tr className='launch' style={{display: exploaded? "none": "block"}}>
-        <td>{rocketName}</td>
+        <td>{rocket.name}</td>
         <td>{time}s</td>
-        <td>Launched<span onClick={handleIntercepting}>{showInterceptSign? " ❌": ""}</span></td>
+        <td>Launched<span onClick={handleIntercepting} style={{display: showInterceptSign? "block": "none"}}>{showInterceptSign? " ❌": ""}</span></td>
     </tr>
   )
 }
 
-export default launchOfDefender;
+export default LaunchOfDefender;

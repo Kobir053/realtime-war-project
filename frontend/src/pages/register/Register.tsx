@@ -22,13 +22,13 @@ const Register: React.FC = () => {
             username: formValues.username,
             password: formValues.password,
             organization: formValues.organization,
-            location: formValues.location
+            location: formValues.organization == "IDF"? formValues.location: null
         };
         dispatch(registerWarrior(data));
         nev("/login");
     }
 
-    const { formValues, handleChange, handleSubmit } = useForm({username: "",password: "",organization: "Hezbollah",location: "North"}, onSubmit);
+    const { formValues, handleChange, handleSubmit } = useForm({username: "",password: "",organization: Object.values(Terorists)[0],location: "North"}, onSubmit);
 
   return (
     <div className='register'>
@@ -37,11 +37,11 @@ const Register: React.FC = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Username</label>
-                    <input type="text" name='username' value={formValues.username}/>
+                    <input type="text" name='username' value={formValues.username} onChange={handleChange}/>
                 </div>
                 <div>
                     <label>Password</label>
-                    <input type="text" name='password' value={formValues.password}/>
+                    <input type="text" name='password' value={formValues.password} onChange={handleChange}/>
                 </div>
                 <div>
                     <label>Organization</label>
@@ -52,12 +52,13 @@ const Register: React.FC = () => {
                 </div>
                 <div style={{display: formValues.organization == "IDF"? "flex": "none"}}>
                     <label>Location</label>
-                    <select value={formValues.location} onChange={handleSubmit} disabled={formValues.organization !== "IDF"}>
+                    <select name='location' value={formValues.location} onChange={handleChange} disabled={formValues.organization !== "IDF"}>
                         {Object.values(IDF).map((val, ind) => {return <option key={ind} value={val}>{val}</option>})}
                     </select>
                 </div>
                 <button type='submit'>Register</button>
             </form>
+            <span>Already Have An Account? <span onClick={() => nev("/login")} style={{textDecoration: "underline"}}>Sign In</span></span>
         </div>
     </div>
   )

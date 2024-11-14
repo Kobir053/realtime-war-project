@@ -36,18 +36,19 @@
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
 .defence-page nav .nav-info .weapons {
-    min-width: 25%;
+    min-width: 45%;
     display: flex;
     justify-content: space-between;
 }
 
 .defence-page nav .nav-info .weapons span{
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .defence-page table{

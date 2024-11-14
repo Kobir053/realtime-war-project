@@ -18,7 +18,7 @@ export interface IRegister {
     username: string;
     password: string;
     organization: string;
-    location: string;
+    location: string | null;
 }
 
 export interface IExploation {

@@ -6,7 +6,7 @@ const router: Router = express.Router();
 
 router.use(authWithBearer);
 
-router.route("/:id/launched/:missileId").put(handleLaunch);
+router.route("/:id/launched").put(handleLaunch);
 
 router.route("/:id/exploaded").put(handleExploation);
 

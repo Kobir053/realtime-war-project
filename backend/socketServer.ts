@@ -30,13 +30,13 @@ export function initializeSocketServer(httpServer: HTTPServer) {
     });
 
     // Broadcast to all except sender
-    socket.on('intercepted-rocket', (room, rocketDetails) => {
+    socket.on('intercept-rocket', (room, rocketDetails) => {
         io.to(room).emit('intercepted', rocketDetails);
         console.log(`rocket ${rocketDetails.name} was intercepted in room ${room}`);
     });
 
     socket.on("hit-rocket", (room, rocketDetails) => {
-        io.to(room).emit("hit", rocketDetails);
+        io.to(room).emit("hitted", rocketDetails);
         console.log(`rocket ${rocketDetails.name} was hit in room ${room}`);
     });
 

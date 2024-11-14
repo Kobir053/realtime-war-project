@@ -36,18 +36,19 @@
     height: 100%;
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
 .attack-page nav .nav-info .weapons {
-    min-width: 25%;
+    min-width: 35%;
     display: flex;
     justify-content: space-between;
 }
 
 .attack-page nav .nav-info .weapons span{
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .attack-page h2{

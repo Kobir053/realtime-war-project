@@ -3,15 +3,15 @@ import warriorModel, { Warrior } from "../models/warriorModel";
 import { IMissileResource } from "../types/projectTypes";
 
 
-export const launchRocket = async (id: string, missileId: string): Promise<Warrior> => {
+export const launchRocket = async (id: string, missileName: string): Promise<Warrior> => {
     try {
         const warrior = await warriorModel.findById(id);
         if(!warrior)
             throw new Error(`warrior with id ${id} not founded`);
 
-        const missileIndex = warrior.resources.findIndex((m: IMissileResource) => m.missile.id == missileId);
+        const missileIndex = warrior.resources.findIndex((m: IMissileResource) => m.missile.name == missileName);
         if(missileIndex < 0)
-            throw new Error("the missile with id "+missileId+" wasn't found in the resources");
+            throw new Error("the missile with name "+missileName+" wasn't found in the resources");
 
         warrior.resources[missileIndex].amount -= 1;
         await warrior.save();

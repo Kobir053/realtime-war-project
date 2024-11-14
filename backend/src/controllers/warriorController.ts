@@ -4,13 +4,13 @@ import { exploadedRocket, launchRocket } from "../services/warriorService";
 export const handleLaunch = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const warriorId = req.params.id;
-        const missileId = req.params.missileId;
-        if(!warriorId || !missileId){
+        const missileName = req.body.missileName;
+        if(!warriorId || !missileName){
             res.status(400).json({message: "you have to send the id of warrior and the missileId in the params"});
             return;
         }
 
-        const updatedWarrior = await launchRocket(warriorId, missileId);
+        const updatedWarrior = await launchRocket(warriorId, missileName);
         res.status(200).json({success: true, message: "missile amount successfully substracted", updatedWarrior});
     } 
     catch (error: any) {
